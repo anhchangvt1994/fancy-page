@@ -37,9 +37,16 @@ $(function($) {
                                     <span class="nextBtn">&nbsp;</span>\
                                    </div>');
 
-            // origin content for fancybox.            
-
-            $(curObj).find("img").click(function(e) {
+            // origin content for fancybox.   
+            var target = ($(curObj).find("a").length!=0?"a":$(curObj).find("li").length!=0?"li":$(curObj).find("div").length!=0?"div":$(curObj).find("dd").length!=0?"dd":"img");
+            console.log(target);
+            if(target!="img"){
+                $(curObj).find(target).click(function(e){
+                    e.preventDefault();
+                    $(this).find("img").click();
+                });
+            }            
+            $(curObj).find("img").click(function(e) {                
                 e.preventDefault();                
                 // setting for fancybox animate after clicked.
                 var trueW, trueH, animate = 50;
