@@ -2,7 +2,7 @@ $(function($) {
     $.fn.mtLbox = function(opt) {
         var itemID = $(this)[0].id,
             itemClass = $(this)[0].className;
-        var curObj = itemID == " " ? "#" + itemID : itemClass.split(" ").length == 0 ? "." + itemClass : "." + itemClass.split(" ")[0],
+        var curObj = itemID != " " ? "#" + itemID : itemClass.split(" ").length == 0 ? "." + itemClass : "." + itemClass.split(" ")[0],
             listImg = $($(this).find("img"));        
         console.log(curObj);
         // get origin paramenters (id/class of current item use plugin function).
