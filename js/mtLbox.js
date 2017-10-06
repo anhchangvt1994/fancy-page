@@ -152,9 +152,9 @@ $(function($) {
                         $("body").find(".imgBox").css({ "width": trueW + 20, "height": trueH + 20 });
                         $("body").find(".navBox").css({ "width": trueW + 20, "height": trueH + 20 });
                         setTimeout(function() {
-                            $("body").find(".fullImg").children().eq(1).attr({ width: trueW, height: trueH }).removeClass("appearOpa");                            
+                            $("body").find(".fullImg").children().eq(1).attr({ width: trueW, height: trueH }).removeClass("appearOpa");
                             setTimeout(function() {
-                                $("body").find(".fullImg").children().eq(2).attr({ width: trueW, height: trueH }).addClass("appearOpa");                                
+                                $("body").find(".fullImg").children().eq(2).attr({ width: trueW, height: trueH }).addClass("appearOpa");
                             }, 150)
                         }, 100);
                         setTimeout(function() {
@@ -172,11 +172,13 @@ $(function($) {
             // detect and control when close button clicked.           
 
             $(".navBox").on("click", ".close-lightBox", function() {
-                $(this).removeClass(curObj.split(".")[1]);
-                $(".fullImg").addClass("hidden").find("img").remove();
-                $(".fullImg").find(".imgBox").css({ "width": "", "height": "" });
-                $(this).parent().addClass("hidden");
-                targetEl = "";
+                if (targetEl != "") {
+                    $(".navBox").removeClass(targetEl.split(".")[1]);
+                    $(".fullImg").addClass("hidden").find("img").remove();
+                    $(".fullImg").find(".imgBox").css({ "width": "", "height": "" });
+                    $(this).parent().addClass("hidden");
+                    targetEl = "";
+                }
             })
 
             // detect and control when resize the screen size.   
