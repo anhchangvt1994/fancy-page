@@ -283,7 +283,7 @@ dl,dd,dt{display: block}
 	padding: 20px;
 	font-size: 14px;
 }
-@media screen and (max-width: 640px){
+@media screen and (max-width: 640px){	
 	#parallax{
 		width: 100%;
 		height: 400px
@@ -306,11 +306,16 @@ dl,dd,dt{display: block}
 	}
 	#parallax .fullBox img:nth-of-type(3){
 		bottom: 20em
-	}
+	}	
 	@media screen and (max-aspect-ratio: 13/9){
 		.navBox .close-lightBox{
 			left: 85%;
-			top: -23%;
+			top: -20%;
 		}
+	}
+	@media screen and (min-width: 500px){
+		.navBox .close-lightBox{		
+			top: -16%;
+		}		
 	}
 }

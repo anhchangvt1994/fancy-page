@@ -1,11 +1,33 @@
 $(function($) {
-    $.fn.mtLbox = function(opt) {
-        var itemID = $(this)[0].id,
-            itemClass = $(this)[0].className;
-        console.log(itemID);
-        var curObj = itemID != " " ? "#" + itemID : itemClass.split(" ").length == 0 ? "." + itemClass : "." + itemClass.split(" ")[0],
-            listImg = $($(this).find("img"));        
-        console.log(curObj);
+    $.fn.mtLbox = function(opt, id) {
+        if ($(this).length > 1) {
+            $(this).each(function(id, data) {
+                $(data).mtLbox({}, id);
+                // console.log(data.id)
+            })
+            return false;
+        }
+        if ($("body").find(".fullImg").length == 0) {
+            $("body").append('<div class="fullImg hidden">\
+                                    <div class="imgBox">\
+                                    </div>\
+                                   </div>\
+                                   <div class="navBox hidden">\
+                                    <span class="prevBtn">&nbsp;</span>\
+                                    <span class="close-lightBox"></span>\
+                                    <span class="nextBtn">&nbsp;</span>\
+                                   </div>');
+        }
+        if (id === undefined) {
+            id = "";
+        }
+        // var itemID = $(this)[0].id,
+        //     itemClass = $(this)[0].className;
+        // var curObj = itemID != "" ? "#" + itemID : itemClass.split(" ").length == 0 ? "." + itemClass : "." + itemClass.split(" ")[0],
+        var curObj = "mtLBox" + (id < 10 ? "0" + id : id);
+        $(this).addClass(curObj);
+        curObj = "." + curObj;
+        var listImg = $($(curObj).find("img"));
         // get origin paramenters (id/class of current item use plugin function).
         // get list images of  that item.  
 
@@ -27,28 +49,19 @@ $(function($) {
 
             // get % for fit images into window width and height.
 
-            var currentPercent, imgID;
-            $("body").append('<div class="fullImg hidden">\
-                                    <div class="imgBox">\
-                                    </div>\
-                                   </div>\
-                                   <div class="navBox hidden">\
-                                    <span class="prevBtn">&nbsp;</span>\
-                                    <span class="close-lightBox"></span>\
-                                    <span class="nextBtn">&nbsp;</span>\
-                                   </div>');
-
-            // origin content for fancybox.   
-            var target = ($(curObj).find("a").length!=0?"a":$(curObj).find("li").length!=0?"li":$(curObj).find("div").length!=0?"div":$(curObj).find("dd").length!=0?"dd":"img");
-            console.log(target);
-            if(target!="img"){
-                $(curObj).find(target).click(function(e){
+            var currentPercent, imgID, targetEl = "";
+            // origin content for fancybox. 
+            var target = ($(curObj).find("a").length != 0 ? "a" : $(curObj).find("li").length != 0 ? "li" : $(curObj).find("div").length != 0 ? "div" : $(curObj).find("dd").length != 0 ? "dd" : "img");
+            if (target != "img") {
+                $(curObj).find(target).click(function(e) {
                     e.preventDefault();
                     $(this).find("img").click();
                 });
-            }            
-            $(curObj).find("img").click(function(e) {                
-                e.preventDefault();                
+            }
+            $(curObj).find("img").click(function(e) {
+                targetEl = curObj;
+                $(".navBox").toggleClass(curObj.split(".")[1]);
+                e.preventDefault();
                 // setting for fancybox animate after clicked.
                 var trueW, trueH, animate = 50;
                 // check if have suffix
@@ -57,14 +70,14 @@ $(function($) {
                     animate = 0;
                 } else {
                     $("body").find(".fullImg").append($(this)[0].outerHTML);
-                }                
+                }
                 $(".fullImg").find("img").load(function() {
 
                     // get width and height in fact of that image acording to % width and height of window    
 
                     trueW = getSmallRatio($(this).prop("naturalWidth"), $(this).prop("naturalHeight")).trueWidth;
                     trueH = getSmallRatio($(this).prop("naturalWidth"), $(this).prop("naturalHeight")).trueHeight;
-                    
+
                     // animte for fancybox
 
                     $("body").find(".fullImg").removeClass("hidden");
@@ -116,57 +129,60 @@ $(function($) {
                     return { "trueWidth": curW, "trueHeight": curH };
                 }
             }
-
-            // dectect and control when next/prev button clicked.    
-
+            // dectect and control when next/prev button clicked.
             $(".navBox").on("click", ".prevBtn, .nextBtn", function() {
-                if ($(this)[0].className == "prevBtn") {
-                    if (imgID > 0) {
-                        imgID--;
-                    } else {
-                        imgID = $(curObj).find("img").length - 1;
-                    }
-                } else if ($(this)[0].className == "nextBtn") {
-                    if (imgID < $(curObj).find("img").length - 1) {
-                        imgID++;
-                    } else {
-                        imgID = 0;
-                    }
-                }
-                var getImgByID = $(curObj).find("img")[imgID];
-                var trueW = getSmallRatio($(getImgByID).prop("naturalWidth"), $(getImgByID).prop("naturalHeight")).trueWidth;
-                var trueH = getSmallRatio($(getImgByID).prop("naturalWidth"), $(getImgByID).prop("naturalHeight")).trueHeight;
-                setTimeout(function() {
-                    $("body").find(".fullImg").append($(getImgByID)[0].outerHTML);
-                    $("body").find(".imgBox").css({ "width": trueW + 20, "height": trueH + 20 });
-                    $("body").find(".navBox").css({ "width": trueW + 20, "height": trueH + 20 });
-                    setTimeout(function() {
-                        $("body").find(".fullImg").children().eq(1).attr({ width: trueW, height: trueH }).removeClass("appearOpa");
-                        console.log($("body").find(".fullImg").children().eq(1));
-                        setTimeout(function() {
-                            $("body").find(".fullImg").children().eq(2).attr({ width: trueW, height: trueH }).addClass("appearOpa");
-                            console.log($("body").find(".fullImg").children().eq(2));
-                        }, 150)
-                    }, 100);
-                    setTimeout(function() {
-                        $("body").find(".fullImg").children().eq(1).remove();
-                        if (!$("body").find(".fullImg img").hasClass("appearOpa")) {
-                            var trueW = getSmallRatio($(getImgByID).prop("naturalWidth"), $(getImgByID).prop("naturalHeight")).trueWidth;
-                            var trueH = getSmallRatio($(getImgByID).prop("naturalWidth"), $(getImgByID).prop("naturalHeight")).trueHeight;
-                            $("body").find(".fullImg img").attr({ width: trueW, height: trueH }).addClass("appearOpa");
+                if (targetEl != "") {
+                    if ($(this)[0].className == "prevBtn") {
+                        if (imgID > 0) {
+                            imgID--;
+                        } else {
+                            imgID = $(targetEl).find("img").length - 1;
                         }
-                    }, 500)
-                }, 150);
+                    } else if ($(this)[0].className == "nextBtn") {
+                        if (imgID < $(targetEl).find("img").length - 1) {
+                            imgID++;
+                        } else {
+                            imgID = 0;
+                        }
+                    }
+                    var getImgByID = $(targetEl).find("img")[imgID];
+                    var trueW = getSmallRatio($(getImgByID).prop("naturalWidth"), $(getImgByID).prop("naturalHeight")).trueWidth;
+                    var trueH = getSmallRatio($(getImgByID).prop("naturalWidth"), $(getImgByID).prop("naturalHeight")).trueHeight;
+                    setTimeout(function() {
+                        console.log($(getImgByID)[0].outerHTML);
+                        $("body").find(".fullImg").append($(getImgByID)[0].outerHTML);
+                        $("body").find(".imgBox").css({ "width": trueW + 20, "height": trueH + 20 });
+                        $("body").find(".navBox").css({ "width": trueW + 20, "height": trueH + 20 });
+                        setTimeout(function() {
+                            $("body").find(".fullImg").children().eq(1).attr({ width: trueW, height: trueH }).removeClass("appearOpa");
+                            // console.log($("body").find(".fullImg").children().eq(1));
+                            setTimeout(function() {
+                                $("body").find(".fullImg").children().eq(2).attr({ width: trueW, height: trueH }).addClass("appearOpa");
+                                // console.log($("body").find(".fullImg").children().eq(2));
+                            }, 150)
+                        }, 100);
+                        setTimeout(function() {
+                            $("body").find(".fullImg").children().eq(1).remove();
+                            if (!$("body").find(".fullImg img").hasClass("appearOpa")) {
+                                var trueW = getSmallRatio($(getImgByID).prop("naturalWidth"), $(getImgByID).prop("naturalHeight")).trueWidth;
+                                var trueH = getSmallRatio($(getImgByID).prop("naturalWidth"), $(getImgByID).prop("naturalHeight")).trueHeight;
+                                $("body").find(".fullImg img").attr({ width: trueW, height: trueH }).addClass("appearOpa");
+                            }
+                        }, 500)
+                    }, 150);
+                }
             })
 
             // detect and control when close button clicked.           
 
             $(".navBox").on("click", ".close-lightBox", function() {
+                $(this).removeClass(curObj.split(".")[1]);
                 $(".fullImg").addClass("hidden").find("img").remove();
                 $(".fullImg").find(".imgBox").css({ "width": "", "height": "" });
                 $(this).parent().addClass("hidden");
+                targetEl = "";
             })
-                    
+
             // detect and control when resize the screen size.   
 
             $(window).resize(function() {
