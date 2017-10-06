@@ -3,7 +3,6 @@ $(function($) {
         if ($(this).length > 1) {
             $(this).each(function(id, data) {
                 $(data).mtLbox({}, id);
-                // console.log(data.id)
             })
             return false;
         }
@@ -149,16 +148,13 @@ $(function($) {
                     var trueW = getSmallRatio($(getImgByID).prop("naturalWidth"), $(getImgByID).prop("naturalHeight")).trueWidth;
                     var trueH = getSmallRatio($(getImgByID).prop("naturalWidth"), $(getImgByID).prop("naturalHeight")).trueHeight;
                     setTimeout(function() {
-                        console.log($(getImgByID)[0].outerHTML);
                         $("body").find(".fullImg").append($(getImgByID)[0].outerHTML);
                         $("body").find(".imgBox").css({ "width": trueW + 20, "height": trueH + 20 });
                         $("body").find(".navBox").css({ "width": trueW + 20, "height": trueH + 20 });
                         setTimeout(function() {
-                            $("body").find(".fullImg").children().eq(1).attr({ width: trueW, height: trueH }).removeClass("appearOpa");
-                            // console.log($("body").find(".fullImg").children().eq(1));
+                            $("body").find(".fullImg").children().eq(1).attr({ width: trueW, height: trueH }).removeClass("appearOpa");                            
                             setTimeout(function() {
-                                $("body").find(".fullImg").children().eq(2).attr({ width: trueW, height: trueH }).addClass("appearOpa");
-                                // console.log($("body").find(".fullImg").children().eq(2));
+                                $("body").find(".fullImg").children().eq(2).attr({ width: trueW, height: trueH }).addClass("appearOpa");                                
                             }, 150)
                         }, 100);
                         setTimeout(function() {
